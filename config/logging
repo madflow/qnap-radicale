@@ -47,7 +47,7 @@ formatter = simple
 [handler_file]
 # File handler
 class = FileHandler
-args = ('/share/huba/radicale/log/radicale.log',)
+args = ('log/radicale.log',)
 level = INFO
 formatter = full
 
