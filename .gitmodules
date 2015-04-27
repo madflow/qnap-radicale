@@ -1,0 +1,3 @@
+[submodule "shared/radicale"]
+	path = shared/radicale
+	url = https://github.com/Kozea/Radicale.git

@@ -1,4 +1,0 @@
-# Give write access to owners
-[owner-write]
-user: .+
-collection: ^%(login)s/.+$

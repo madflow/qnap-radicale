@@ -11,6 +11,7 @@ PIDFILE=$RUNDIR/$QPKG_NAME.pid
 
 RADICALE_OPTS="--daemon --pid $PIDFILE"
 
+# :S Copy Paste from some other qpkg
 find_base(){
     # Determine BASE installation location according to smb.conf
     publicdir=`/sbin/getcfg $QPKG_NAME Install_Path -f ${CONF}`
@@ -36,19 +37,33 @@ find_base(){
     QPKG_DIR=${QPKG_BASE}/.qpkg/${QPKG_NAME}
 }
 
+check_enabled() {
 
-start_radicale() {
     ENABLED=$(/sbin/getcfg $QPKG_NAME Enable -u -d FALSE -f $CONF)
     if [ "$ENABLED" != "TRUE" ]; then
         echo "$QPKG_NAME is disabled."
         exit 1
     fi
+}
+
+setup() {
+
+    [ -f $QPKG_DIR/config/radicale.conf ] || cp $QPKG_DIR/config/dist/radicale.conf.dist $QPKG_DIR/config/radicale.conf
+    [ -f $QPKG_DIR/config/logging ] || cp $QPKG_DIR/config/dist/logging.dist $QPKG_DIR/config/logging
+    [ -f $QPKG_DIR/config/rights ] || cp $QPKG_DIR/config/dist/rights.dist $QPKG_DIR/config/rights
+    [ -f $QPKG_DIR/config/users ] || cp $QPKG_DIR/config/dist/users.dist $QPKG_DIR/config/users
+
+}
+
+start_radicale() {
+    check_enabled
     echo "Starting $QPKG_NAME"
     find_base
-    echo "Starting Radicale"
+    setup
+    # Set Python Path
     export PYTHONPATH=$QPKG_DIR/radicale
     [ -d $RUNDIR ] || mkdir -p $RUNDIR
-    ${PYTHON_27} $QPKG_DIR/radicale/bin/radicale $RADICALE_OPTS -C $QPKG_DIR/radicale.conf
+    ${PYTHON_27} $QPKG_DIR/radicale/bin/radicale $RADICALE_OPTS -C $QPKG_DIR/config/radicale.conf
     RETVAL=$?
 }
 
@@ -83,7 +98,6 @@ check_for_git(){ #clinton.hall Sickbeard
 
 case "$1" in
   start)
-    check_for_git
     start_radicale
     ;;
 
