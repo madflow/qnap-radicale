@@ -5,4 +5,4 @@ WORKING_DIR=`pwd`
 
 git submodule update
 cd shared/radicale && git checkout $VERSION
-cd $WORKING_DIR && qbuild
+cd $WORKING_DIR && qbuild --exclude ".git"

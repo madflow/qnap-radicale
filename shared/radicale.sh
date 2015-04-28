@@ -8,6 +8,8 @@ PYTHON_27=/usr/bin/python2.7
 RETVAL=0
 RUNDIR=/var/run/$QPKG_NAME
 PIDFILE=$RUNDIR/$QPKG_NAME.pid
+SSL_KEY="/etc/ssl/private/myhost.key"
+SSL_CERT="/etc/ssl/certs/myhost.crt"
 
 RADICALE_OPTS="--daemon --pid $PIDFILE"
 
@@ -53,6 +55,10 @@ setup() {
     [ -f $QPKG_DIR/config/rights ] || cp $QPKG_DIR/config/dist/rights.dist $QPKG_DIR/config/rights
     [ -f $QPKG_DIR/config/users ] || cp $QPKG_DIR/config/dist/users.dist $QPKG_DIR/config/users
 
+    sed -i -e 's|{{QPKG_DIR}}|'"$QPKG_DIR"'|g' $QPKG_DIR/config/radicale.conf
+    sed -i -e 's|{{SSL_KEY}}|'"$SSL_KEY"'|g' $QPKG_DIR/config/radicale.conf
+    sed -i -e 's|{{SSL_CERT}}|'"$SSL_CERT"'|g' $QPKG_DIR/config/radicale.conf
+    sed -i -e 's|{{QPKG_DIR}}|'"$QPKG_DIR"'|g' $QPKG_DIR/config/logging
 }
 
 start_radicale() {
@@ -65,6 +71,7 @@ start_radicale() {
     [ -d $RUNDIR ] || mkdir -p $RUNDIR
     ${PYTHON_27} $QPKG_DIR/radicale/bin/radicale $RADICALE_OPTS -C $QPKG_DIR/config/radicale.conf
     RETVAL=$?
+    echo $RETVAL
 }
 
 stop_radicale() {
