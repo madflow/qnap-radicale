@@ -1,3 +1,9 @@
 [submodule "shared/radicale"]
-	path = shared/radicale
+        path = shared/radicale
+        url = https://github.com/Kozea/Radicale.git
+[submodule "shared/lib/radicale"]
+	path = shared/lib/radicale
 	url = https://github.com/Kozea/Radicale.git
+[submodule "shared/lib/bottle"]
+	path = shared/lib/bottle
+	url = https://github.com/bottlepy/bottle.git

@@ -67,11 +67,16 @@ start_radicale() {
     find_base
     setup
     # Set Python Path
-    export PYTHONPATH=$QPKG_DIR/radicale
+    export PYTHONPATH=$QPKG_DIR/lib/radicale:$QPKG_DIR/lib/bottle
     [ -d $RUNDIR ] || mkdir -p $RUNDIR
-    ${PYTHON_27} $QPKG_DIR/radicale/bin/radicale $RADICALE_OPTS -C $QPKG_DIR/config/radicale.conf
+    ${PYTHON_27} $QPKG_DIR/lib/radicale/bin/radicale $RADICALE_OPTS -C $QPKG_DIR/config/radicale.conf
     RETVAL=$?
-    echo $RETVAL
+}
+
+start_web() {
+    check_enabled
+    export PYTHONPATH=$QPKG_DIR/lib/radicale:$QPKG_DIR/lib/bottle
+    ${PYTHON_27} $QPKG_DIR/web/app.py
 }
 
 stop_radicale() {
@@ -106,6 +111,7 @@ check_for_git(){ #clinton.hall Sickbeard
 case "$1" in
   start)
     start_radicale
+    start_web
     ;;
 
   stop)
