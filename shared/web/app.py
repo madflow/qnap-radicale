@@ -1,7 +1,22 @@
-from bottle import route, run, template
+from bottle import Bottle, run, template, route, static_file
+import daemon
+import os
 
-@route('/')
+WEB_DIR = os.path.dirname(os.path.realpath(__file__))
+
+app = Bottle()
+
+@app.route('/')
 def index():
     return template('index.html')
 
-run(host='0.0.0.0', port=5000)
+def main():
+    run(app, host='0.0.0.0', port=5000)
+
+@app.route('/static/<filepath:path>')
+def server_static(filepath):
+    return static_file(filepath, root=os.path.join(WEB_DIR, 'static'))
+
+if __name__ == "__main__":
+    with daemon.DaemonContext(working_directory=WEB_DIR):
+        main()

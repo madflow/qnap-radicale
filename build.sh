@@ -8,4 +8,4 @@ git submodule update
 cd shared/lib/radicale && git checkout $RADICALE_VERSION
 cd $WORKING_DIR
 cd shared/lib/bottle && git checkout $BOTTLE_VERSION
-cd $WORKING_DIR && qbuild --exclude ".git"
+cd $WORKING_DIR && qbuild --exclude ".git" --exclude ".pyc"

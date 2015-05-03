@@ -67,7 +67,7 @@ start_radicale() {
     find_base
     setup
     # Set Python Path
-    export PYTHONPATH=$QPKG_DIR/lib/radicale:$QPKG_DIR/lib/bottle
+    export PYTHONPATH=$QPKG_DIR/lib/radicale
     [ -d $RUNDIR ] || mkdir -p $RUNDIR
     ${PYTHON_27} $QPKG_DIR/lib/radicale/bin/radicale $RADICALE_OPTS -C $QPKG_DIR/config/radicale.conf
     RETVAL=$?
@@ -75,8 +75,10 @@ start_radicale() {
 
 start_web() {
     check_enabled
-    export PYTHONPATH=$QPKG_DIR/lib/radicale:$QPKG_DIR/lib/bottle
+    # Set Python Path
+    export PYTHONPATH=$QPKG_DIR/lib/bottle:$QPKG_DIR/lib/daemon
     ${PYTHON_27} $QPKG_DIR/web/app.py
+    RETVAL=$?
 }
 
 stop_radicale() {
