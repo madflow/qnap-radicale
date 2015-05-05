@@ -1,35 +1,107 @@
 <!doctype html>
 <html class="no-js" lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Radicale for QNAP</title>
-    <link rel="stylesheet" href="static/css/foundation.css" />
+    <link rel="stylesheet" href="static/css/foundation.css"/>
     <script src="static/js/vendor/modernizr.js"></script>
-  </head>
-  <body>
+</head>
+<body>
 
-    <div class="row">
-      <div class="large-12 columns">
-        <h1>Radicale for QNAP</h1>
-      </div>
+%def row_heading(label, id):
+<div class="row">
+    <div class="large12 columns">
+        <h1 data-magellan-destination="{{ id }}" id="{{ id }}">{{ label }}</h1>
+        <hr/>
     </div>
-    <form class="custom">
-        <div class="row">
-          <div class="large-12 columns">
-            <div class="switch">
-              <input id="radicale_config_ssl" type="checkbox">
-              <label for="radicale_config_ssl">USE SSL</label>
-            </div>
-            USE SSL
-          </div>
-        </div>
-    </form>
+</div>
+%end
 
-    <script src="static/js/vendor/jquery.js"></script>
-    <script src="static/js/foundation.min.js"></script>
-    <script>
-      $(document).foundation();
-    </script>
-  </body>
+%def row_users(id, label):
+<div class="row">
+    <div class="large-3 columns">
+        <label for="{{ id }}">{{ label }}</label>
+    </div>
+    <div class="large-9 columns">
+        <textarea></textarea>
+    </div>
+</div>
+%end
+
+%def row_input_text(id, label, default, value=""):
+<div class="row">
+    <div class="large-3 columns">
+        <label for="{{ id }}">{{ label }}</label>
+    </div>
+    <div class="large-9 columns">
+        <input type="text" id="{{ id }}" name="{{ id }}" value="{{ value if value else default }}"/>
+    </div>
+</div>
+%end
+
+%def row_input_boolean(id, label, default, value=0):
+<div class="row">
+    <div class="large-3 columns">
+        <label for="{{ id }}">{{ label }}</label>
+    </div>
+    <div class="large-9 columns">
+        <div class="switch">
+            <input id="{{ id }}" type="checkbox" {{ "checked" if get(value, default) == 1 else "" }}>
+            <label for="{{ id }}">{{ label }}</label>
+        </div>
+    </div>
+</div>
+%end
+
+
+<div data-magellan-expedition="fixed">
+    <div class="row">
+        <div class="large-12 columns">
+            <dl class="sub-nav">
+            </dl>
+        </div>
+    </div>
+</div>
+
+<form class="custom">
+
+    %row_heading("Server", "server")
+    %row_input_text("radicale_server_hosts", "Hosts", "0.0.0.0:5232")
+    %row_input_boolean("radicale_server_ssl", "SSL", 1)
+    %row_input_text("radicale_server_certificate", "Certificate", "/etc/ssl/certs/myhost.crt")
+    %row_input_text("radicale_server_key", "Key", "/etc/ssl/private/myhost.key")
+    %row_input_boolean("radicale_server_dns_lookup", "DNS Lookup", 1)
+    %row_input_text("radicale_server_dns_realm", "Realm", "Radicale - Password Required")
+
+    %row_heading("Encoding", "encoding")
+    %row_input_text("radicale_server_encoding_request", "Responding Request", "utf-8")
+    %row_input_text("radicale_server_encoding_stock", "Collection", "utf-8")
+
+    %row_heading("Auth", "auth")
+    %row_users("users", "Users")
+
+</form>
+
+<script src="static/js/vendor/jquery.js"></script>
+<script src="static/js/foundation.min.js"></script>
+<script>
+    $(document).foundation();
+
+    $(document).ready(function() {
+        var tpl = '<dd data-magellan-arrival=""><a href=""></a></dd>';
+        // \o/ \o/ \o/
+        $('[data-magellan-destination]').each(function() {
+            var id = $(this).prop('id');
+            var destination = $(this).attr('data-magellan-destination');
+            var label = $(this).text();
+            var el = $(tpl);
+            el.find('a').text(label).prop('href', '#' + id);
+            el.attr('data-magellan-arrival', destination);
+            $('.sub-nav').append(el);
+        });
+    });
+
+</script>
+</body>
 </html>

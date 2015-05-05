@@ -11,12 +11,13 @@ def index():
     return template('index.html')
 
 def main():
-    run(app, host='0.0.0.0', port=5000)
+    run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=True)
 
 @app.route('/static/<filepath:path>')
 def server_static(filepath):
     return static_file(filepath, root=os.path.join(WEB_DIR, 'static'))
 
 if __name__ == "__main__":
-    with daemon.DaemonContext(working_directory=WEB_DIR):
-        main()
+    main()
+    #with daemon.DaemonContext(working_directory=WEB_DIR):
+    #    main()
