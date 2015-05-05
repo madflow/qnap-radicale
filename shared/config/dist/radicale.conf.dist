@@ -1,0 +1,38 @@
+[server]
+
+hosts = 0.0.0.0:5252
+ssl = True
+certificate = {{SSL_CERT}}
+key = {{SSL_KEY}}
+realm = Radicale - Password Required
+
+[storage]
+type = filesystem
+filesystem_folder = {{QPKG_DIR}}/collections
+
+[logging]
+debug=True
+config = {{QPKG_DIR}}/config/logging
+
+[encoding]
+
+# Encoding for responding requests
+request = utf-8
+
+# Encoding for storing local collections
+stock = utf-8
+
+[rights]
+
+type = owner_only
+file = {{QPKG_DIR}}/config/rights
+
+[auth]
+type = htpasswd
+htpasswd_filename = {{QPKG_DIR}}/config/users
+htpasswd_encryption = plain
+
+
+
+
+
