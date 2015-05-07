@@ -29,57 +29,75 @@
 </div>
 %end
 
-%def row_input_text(id, label, default, value=""):
+%def row_input_text(id, label, value):
 <div class="row">
     <div class="large-3 columns">
         <label for="{{ id }}">{{ label }}</label>
     </div>
     <div class="large-9 columns">
-        <input type="text" id="{{ id }}" name="{{ id }}" value="{{ value if value else default }}"/>
+        <input type="text" id="{{ id }}" name="{{ id }}" value="{{ value }}" required="true">
     </div>
 </div>
 %end
 
-%def row_input_boolean(id, label, default, value=0):
+%def row_input_boolean(id, label, value):
 <div class="row">
     <div class="large-3 columns">
         <label for="{{ id }}">{{ label }}</label>
     </div>
     <div class="large-9 columns">
         <div class="switch">
-            <input id="{{ id }}" type="checkbox" {{ "checked" if get(value, default) == 1 else "" }}>
+            <input id="{{ id }}" value="{{ value }}" name="{{ id }}" type="checkbox" {{ "checked" if value == True else "" }}>
             <label for="{{ id }}">{{ label }}</label>
         </div>
     </div>
 </div>
 %end
 
+%def save_and_restart():
+    <div class="row">
+        <div class="large-12 columns">
+            <button type="submit" class="button" name="save" value="save"> Save</button>
+            <button type="submit" class="button" name="restart" value="restart">Save and Restart</button>
+        </div>
+    </div>
+%end
+
 
 <div data-magellan-expedition="fixed">
     <div class="row">
         <div class="large-12 columns">
-            <dl class="sub-nav">
-            </dl>
+            <dl class="sub-nav" />
         </div>
     </div>
 </div>
 
-<form class="custom">
+<form class="custom" method="post">
 
+    <div class="panel" style="min-height: 800px;">
     %row_heading("Server", "server")
-    %row_input_text("radicale_server_hosts", "Hosts", "0.0.0.0:5232")
-    %row_input_boolean("radicale_server_ssl", "SSL", 1)
-    %row_input_text("radicale_server_certificate", "Certificate", "/etc/ssl/certs/myhost.crt")
-    %row_input_text("radicale_server_key", "Key", "/etc/ssl/private/myhost.key")
-    %row_input_boolean("radicale_server_dns_lookup", "DNS Lookup", 1)
-    %row_input_text("radicale_server_dns_realm", "Realm", "Radicale - Password Required")
-
+    %row_input_text("radicale_server_hosts", "Hosts", config.get('server', 'hosts'))
+    %row_input_boolean("radicale_server_ssl", "SSL", config.getboolean('server', 'ssl'))
+    %row_input_text("radicale_server_certificate", "Certificate", config.get('server', 'certificate'))
+    %row_input_text("radicale_server_key", "Key", config.get('server', 'key'))
+    %row_input_boolean("radicale_server_dns_lookup", "DNS Lookup", config.getboolean('server', 'dns_lookup'))
+    %row_input_text("radicale_server_realm", "Realm", config.get('server', 'realm'))
+    %save_and_restart()
+    </div>
+    <div class="panel" style="min-height: 800px;">
     %row_heading("Encoding", "encoding")
     %row_input_text("radicale_server_encoding_request", "Responding Request", "utf-8")
     %row_input_text("radicale_server_encoding_stock", "Collection", "utf-8")
+    %save_and_restart()
+        </div>
 
+    <div class="panel" style="min-height: 800px;">
     %row_heading("Auth", "auth")
     %row_users("users", "Users")
+    %save_and_restart()
+        </div>
+
+
 
 </form>
 

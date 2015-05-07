@@ -5,6 +5,7 @@ ssl = True
 certificate = {{SSL_CERT}}
 key = {{SSL_KEY}}
 realm = Radicale - Password Required
+dns_lookup = True
 
 [storage]
 type = filesystem
