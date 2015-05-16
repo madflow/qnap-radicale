@@ -2,8 +2,7 @@ from bottle import Bottle, run, template, static_file, request
 import daemon
 import os
 import ConfigParser
-import subprocess
-import sys
+import subprocess, threading
 
 WEB_DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_DIR = os.path.realpath(os.path.join(WEB_DIR, '../config'))
@@ -12,23 +11,27 @@ SHARED_DIR = os.path.realpath(os.path.join(WEB_DIR, '../'))
 app = Bottle()
 
 
-def execute(command):
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+class Command(object):
+    def __init__(self, cmd):
+        self.cmd = cmd
+        self.process = None
 
-    while True:
-        nextline = process.stdout.readline()
-        if nextline == '' and process.poll() is not None:
-            break
-        sys.stdout.write(nextline)
-        sys.stdout.flush()
+    def run(self, timeout):
+        def target():
+            print 'Thread started'
+            self.process = subprocess.Popen(self.cmd, shell=True)
+            self.process.communicate()
+            print 'Thread finished'
 
-    output = process.communicate()[0]
-    exit_code = process.returncode
+        thread = threading.Thread(target=target)
+        thread.start()
 
-    if exit_code == 0:
-        return output
-    else:
-        raise Exception(command, exit_code, output)
+        thread.join(timeout)
+        if thread.is_alive():
+            print 'Terminating process'
+            self.process.terminate()
+            thread.join()
+        print self.process.returncode
 
 
 @app.route('/')
@@ -79,7 +82,8 @@ def save():
 
     # Restarting Radicale
     try:
-        execute(os.path.join(SHARED_DIR, 'radicale.sh') + ' restart_radicale')
+        command = Command(os.path.join(SHARED_DIR, 'radicale.sh') + ' restart_radicale')
+        command.run(5)
         messages.append(('Radicale restarted', 'success'))
     except:
         messages.append(('Restart Failed', 'alert'))
