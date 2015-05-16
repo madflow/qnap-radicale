@@ -1,6 +1,6 @@
 #!/bin/sh
 CONF=/etc/config/qpkg.conf
-QPKG_NAME="radicale-dev"
+QPKG_NAME="radicale"
 QPKG_DIR=
 QPKG_BASE=
 PYTHON_27=/usr/bin/python2.7
