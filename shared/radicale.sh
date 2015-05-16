@@ -120,6 +120,11 @@ case "$1" in
     stop_radicale
     ;;
 
+  restart_radicale)
+    stop_radicale
+    start_radicale
+    ;;
+
   restart)
     $0 stop
     $0 start

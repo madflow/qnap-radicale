@@ -18,13 +18,28 @@
 </div>
 %end
 
-%def row_users(id, label):
+%def row_select(label, id, values):
 <div class="row">
     <div class="large-3 columns">
         <label for="{{ id }}">{{ label }}</label>
     </div>
     <div class="large-9 columns">
-        <textarea></textarea>
+        <select id="{{ id }}" name="{{ id }}" required="true">
+        % for value, label in values:
+            <option value="{{ value }}">{{ label }}</option>
+        % end
+        </select>
+    </div>
+</div>
+%end
+
+%def row_users(id, label, value):
+<div class="row">
+    <div class="large-3 columns">
+        <label for="{{ id }}">{{ label }}</label>
+    </div>
+    <div class="large-9 columns">
+        <input type="text" id="{{ id }}" name="{{ id }}" value="{{ value }}" required="true">
     </div>
 </div>
 %end
@@ -55,26 +70,26 @@
 %end
 
 %def save_and_restart():
-    <div class="row">
-        <div class="large-12 columns">
-            <button type="submit" class="button" name="save" value="save"> Save</button>
-            <button type="submit" class="button" name="restart" value="restart">Save and Restart</button>
-        </div>
-    </div>
+    <ul class="button-group">
+    <!--<li><button type="submit" class="button tiny" name="save" value="save"> Save</button></li>-->
+    <li class="menu-icon"><button type="submit" class="button tiny" name="restart" value="restart">Save and Restart</button></li>
+    </ul>
 %end
 
+<form class="custom" method="post">
 
 <div data-magellan-expedition="fixed">
     <div class="row">
-        <div class="large-12 columns">
+        <div class="large-6 columns">
             <dl class="sub-nav" />
+        </div>
+        <div class="large-6 columns">
+            %save_and_restart()
         </div>
     </div>
 </div>
 
-<form class="custom" method="post">
-
-    <div class="panel" style="min-height: 800px;">
+    <div class="panel">
     %row_heading("Server", "server")
     %row_input_text("radicale_server_hosts", "Hosts", config.get('server', 'hosts'))
     %row_input_boolean("radicale_server_ssl", "SSL", config.getboolean('server', 'ssl'))
@@ -82,20 +97,27 @@
     %row_input_text("radicale_server_key", "Key", config.get('server', 'key'))
     %row_input_boolean("radicale_server_dns_lookup", "DNS Lookup", config.getboolean('server', 'dns_lookup'))
     %row_input_text("radicale_server_realm", "Realm", config.get('server', 'realm'))
-    %save_and_restart()
     </div>
-    <div class="panel" style="min-height: 800px;">
+    <div class="panel">
     %row_heading("Encoding", "encoding")
     %row_input_text("radicale_server_encoding_request", "Responding Request", "utf-8")
     %row_input_text("radicale_server_encoding_stock", "Collection", "utf-8")
-    %save_and_restart()
-        </div>
+    </div>
 
-    <div class="panel" style="min-height: 800px;">
+    <div class="panel">
     %row_heading("Auth", "auth")
-    %row_users("users", "Users")
-    %save_and_restart()
-        </div>
+    %row_users("radicale_auth_htpasswd_filename", "HTPasswd file", config.get('auth', 'htpasswd_filename'))
+    </div>
+
+    <div class="panel">
+    %row_heading("Rights", "rights")
+    %row_users("radicale_rights_file", "HTPasswd file", config.get('rights', 'file'))
+    </div>
+
+    <div class="panel">
+    %row_heading("Storage", "storage")
+    %row_users("radicale_storage_filesystem_folder", "Collection folder", config.get('storage', 'filesystem_folder'))
+    </div>
 
 
 

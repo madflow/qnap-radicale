@@ -18,10 +18,10 @@ def index():
 @app.post('/')
 def save():
     config.set('server', 'hosts', request.forms.get('radicale_server_hosts'))
-    config.set('server', 'ssl', str(request.forms.get('radicale_server_ssl')))
+    config.set('server', 'ssl', str(request.forms.get('radicale_server_ssl', False)))
     config.set('server', 'certificate', request.forms.get('radicale_server_certificate'))
     config.set('server', 'key', request.forms.get('radicale_server_key'))
-    config.set('server', 'dns_lookup', str(request.forms.get('radicale_server_dns_lookup')))
+    config.set('server', 'dns_lookup', str(request.forms.get('radicale_server_dns_lookup', False)))
     config.set('server', 'realm', request.forms.get('radicale_server_realm'))
 
     config.set('encoding', 'request', request.forms.get('radicale_server_encoding_request'))
@@ -29,6 +29,9 @@ def save():
 
     with open(os.path.join(CONFIG_DIR, 'new.conf'), 'wb') as configfile:
         config.write(configfile)
+
+    # Restarting Radicale
+
 
     return template('index.html', config=config)
 
