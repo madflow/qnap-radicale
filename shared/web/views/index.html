@@ -6,12 +6,19 @@
     <title>Radicale for QNAP</title>
     <link rel="stylesheet" href="static/css/foundation.css"/>
     <script src="static/js/vendor/modernizr.js"></script>
+
+    <style type="text/css">
+        form.custom {
+            margin-bottom: 400px;
+        }
+    </style>
+
 </head>
 <body>
 
 %def row_heading(label, id):
 <div class="row">
-    <div class="large12 columns">
+    <div class="large-12 columns">
         <h1 data-magellan-destination="{{ id }}" id="{{ id }}">{{ label }}</h1>
         <hr/>
     </div>
@@ -70,7 +77,7 @@
 %end
 
 %def save_and_restart():
-    <ul class="button-group">
+    <ul class="button-group right">
     <!--<li><button type="submit" class="button tiny" name="save" value="save"> Save</button></li>-->
     <li class="menu-icon"><button type="submit" class="button tiny" name="restart" value="restart">Save and Restart</button></li>
     </ul>
@@ -78,16 +85,25 @@
 
 <form class="custom" method="post">
 
-<div data-magellan-expedition="fixed">
-    <div class="row">
-        <div class="large-6 columns">
-            <dl class="sub-nav" />
-        </div>
-        <div class="large-6 columns">
-            %save_and_restart()
+    <div data-magellan-expedition="fixed">
+        <div class="row">
+            <div class="small-6 columns">
+                <dl class="sub-nav" />
+            </div>
+            <div class="small-6 columns">
+                %save_and_restart()
+            </div>
         </div>
     </div>
-</div>
+
+    <div class="row">
+    % for text, type in messages:
+        <div data-alert class="alert-box {{type}}">
+            {{ text }}
+            <a href="#" class="close">&times;</a>
+        </div>
+    % end
+    </div>
 
     <div class="panel">
     %row_heading("Server", "server")
